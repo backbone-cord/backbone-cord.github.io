@@ -22,10 +22,10 @@ Implement el as a function and it will be passed and _el and _subview methods as
 
 ```javascript
 var MyView = Backbone.View.extend({
-	el: function(_el, _subview) {
-		return _el('', {},
+	el: function(h, _subview) {
+		return h('', {},
 			'Text node child',
-			_el('p', 'A paragraph child. I have {_x} pet {_animal}s.')
+			h('p', 'A paragraph child. I have {_x} pet {_animal}s.')
 		);
 	}
 	properties: {
@@ -37,7 +37,25 @@ var MyView = Backbone.View.extend({
 
 #### properties
 
-The properties dictionary will initialize property methods before el() is called and the layout created. By default properties are created with get/set methods that simple set an internal variable that is prefixed with an _. To override default methods implement them as _get<PropertyName>() and _set<PropertyName>(value). 
+The properties dictionary will synthesize property methods and set their value before el() is called and the layout created. By default properties are synthesized with get/set methods that simply set an internal variable that is the key name prefixed with an _. To override default methods or behavior provide a definition instead of a simple value adhering to the following rules. Each definition is an object made up of ONLY one or more of the keys get, set, and value.
+
+* When definition is just a simple value it implies `{value: definition}` - plain objects should be explicity set using a value key to avoid confusion with a definition
+* `set: null` creates a readonly property
+* When definition is a function it implies `{get: definition, set: null}`
+* When either get or set is missing default accessors that read/write the backing _key are used
+
+#### observers
+
+Similar to properties and events, the observers object describes observer methods to automatically observe various keys and take action when a value changes.
+
+```javascript
+var View = Backbone.View.extend({
+	//....
+	observers: {
+		key: 'onKeyChangeViewMethod'
+	}
+});
+```
 
 #### render
 
