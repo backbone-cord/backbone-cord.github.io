@@ -18,11 +18,11 @@ Additions to Backbone
 
 #### el
 
-Implement el as a function and it will be passed and _el and _subview methods as arguments. Name these however you want.
+Implement el as a function and it will be passed and _el and _subview methods as arguments. Name these however you want. Below h and s are used as abbreviations of hyperscript and subview.
 
 ```javascript
 var MyView = Backbone.View.extend({
-	el: function(h, _subview) {
+	el: function(h, s) {
 		return h('', {},
 			'Text node child',
 			h('p', 'A paragraph child. I have {_x} pet {_animal}s.')
@@ -65,6 +65,12 @@ The render method will typically go unused, but it could be used for rendering v
 **NOTE:** Properties are set before the el method is called, so take caution when referencing dom elements from within the set methods.
 
 **NOTE:** Memory leaks can occur when removing elements that make use of binding. Unbinding happens when the containing View is removed. Subviews replaced with other subviews does proper cleanup.
+
+Differences to creating a View's element with Backbone
+-------------------------------
+
+Normally, in Backbone, either an element is provided as an existing element with the el attribute, or one is created with the given tagName, id, and className, or a function is used to generate the element.  Cord Views normally use the latter with presupplied arguments for creating hyperscript and subviews.  Also, when the el is function Cord will apply the className to the el which Backbone normally does not do.
+
 
 Methods
 -------------------------------
