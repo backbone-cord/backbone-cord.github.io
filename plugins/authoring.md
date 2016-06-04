@@ -1,13 +1,17 @@
-Creating Plugins
+Authoring Plugins
 -------------------------------
 
-#### Specification
+#### Overview
 
-Plugins define a name, requirements, any number of callbacks, and then register themselves either by pushing or unshifting one plugin at a time to the plugins array.
+#### Dependencies
 
 Dependencies can be specified as the key `requirements`, an array of strings, inside the plugin and Cord will automatically check to make sure plugins wih those names are also registered.  It does not however check the order of plugins.  To ensure a plugin is run before others use the unshift method.
 
-#### Scope Specification
+#### Plugin Specification
+
+Plugins define a name, requirements, any number of callbacks, and then register themselves either by pushing or unshifting one plugin at a time to the plugins array.
+
+#### Scope Plugin Specification
 
 Plugins can also provide a variable binding scope for to allow access to other variables outside of the View's model. All that is needed is a `scope` object specified in the plugin with the following methods:
 
