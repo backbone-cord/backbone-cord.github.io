@@ -1,7 +1,7 @@
 hidden
 -------------------------------
 
-The hidden plugin is very simple and serves the purpose of automatically adjusting the display style of any given element to none when the observing value changes.
+The hidden plugin is very simple and serves the purpose of automatically adjusting the display style of any given element to `none` when the observing value changes.
 
 #### Usage
 
