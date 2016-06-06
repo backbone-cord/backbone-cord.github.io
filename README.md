@@ -3,12 +3,18 @@ About
 
 **backbone.cord.js** enhances Backbone by enabling the easy creation of reactive connected views with two-way data binding and Jade-like declarative syntax.
 
+**backbone.cord.js** is a layout and data pipeline for Backbone that connects views with subviews and models. Observation and plugin system also enables many types of reactive interfaces.
+
 #### Requirements
 
 * Backbone 1.1+, other versions and variants may also work but haven't been tested
 * Modern Browser, IE9+ - Array.indexOf, Object.getPrototypeOf, Object.defineProperty, Object.getOwnPropertyDescriptor, and Function.bind methods are used, possibly others that would need a polyfill on older browsers
 
 *NOTE:* jQuery and Underscore.js are NOT required, though normally used with Backbone.
+
+#### Compatibility Mode
+
+By default, Cord will globally modify the Backbone.View class. However, if `window.cordCompatibilityMode = true;` is set before Cord is loaded then Backbone.View will be extended as Backbone.Cord.View and all view modifications will happen on that class and Backbone.View will remain untouched. Backbone.View and Backbone.Cord.View are compatible with each other. There is no compatibility mode for Backbone.Model - any plugin changing Backbone.Model applies to all models.
 
 Additions to Backbone
 -------------------------------
