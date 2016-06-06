@@ -30,6 +30,7 @@ The callback function must either do nothing or one of the following:
 ##### Instructions and Restrictions
 
 * Always include a tag in the selector
+* Listen to the view's remove event to cleanup anything that is needed
 * If replacing an element the old one may still be around with bindings and even as a property through this if an #id is used - be very aware of what the replacement is doing
 * DO NOT replace any root elements in a view's el layout
 * If the element is the root element for a view and the documentfragment is returned, the remove function will not work properly because the view's el becomes an empty documentfragment

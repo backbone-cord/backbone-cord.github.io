@@ -1,7 +1,7 @@
 binding
 -------------------------------
 
-Binds element attributes and text-based children to observable keys contained within {}.
+Binds element attributes and text-based children to observable keys contained within `{observerableKey}` formatters.
 
 ```javascript
 h('div', {data-name: '{name}'}, 'Example with name bound here: {name}.');
