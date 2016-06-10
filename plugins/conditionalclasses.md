@@ -1,7 +1,10 @@
-#### conditionalclasses
+conditionalclasses
+-------------------------------
 
-A CSS can be conditionally applied using the following syntax.
+A CSS class can be conditionally applied by placing an oberver key in parentheses after the class name to add/remove based on the value.
+
+#### Example
 
 ```javascript
-h('button.myclass(varName)');
+h('button.myclass(observerKey)');
 ```
