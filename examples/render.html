@@ -1,0 +1,26 @@
+<html>
+<body>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/underscore/master/underscore.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jquery/jquery/2.2.4/dist/jquery.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/backbone/master/backbone.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord/master/dist/backbone.cord.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var RenderView = Backbone.View.extend({
+			el: function(h) {
+				return h('b', h('i', 'Static layout'));
+			},
+			render: function(h, s, data) {
+				var nodes = [];
+				for(var i = 0; i < data.length; ++i)
+					nodes.push(h('p', '{_value} ', data[i]));
+				return nodes;
+			},
+			properties: { value: 0 }
+		});
+		window.view = new RenderView();
+		$(document.body).append(view.render(['1', '2', '3']).el);
+	});
+	</script>
+</body>
+</html>

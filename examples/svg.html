@@ -1,0 +1,27 @@
+<html>
+<body>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/underscore/master/underscore.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jquery/jquery/2.2.4/dist/jquery.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/backbone/master/backbone.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord/master/dist/backbone.cord.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord.svg/master/backbone.cord.svg.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var RectView = Backbone.View.extend({
+			el: function() {
+				var svg = this._svg.bind(this);
+				return svg('svg', {width: 400, height: 400},
+						svg('rect', {x: 50, y: '{_secondsElapsed}', width: 150, height: 150, style: 'fill: blue; stroke: pink; stroke-width: 5; fill-opacity: 0.1; stroke-opacity: 0.9;'})
+					);
+			},
+			properties: { secondsElapsed: 0 },
+			initialize: function() {
+				this.interval = setInterval(function(){ this.secondsElapsed += 10; }.bind(this), 1000);
+				this.listenTo(this, 'remove', function() { clearInterval(this.interval); });
+			}
+		});
+		$(document.body).append((new RectView()).el);
+	});
+	</script>
+</body>
+</html>

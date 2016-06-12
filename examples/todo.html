@@ -1,0 +1,36 @@
+<html>
+<body>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/underscore/master/underscore.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jquery/jquery/2.2.4/dist/jquery.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/backbone/master/backbone.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord/master/dist/backbone.cord.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var TodoItemView = Backbone.View.extend({
+			el: function(h) {
+				return h('li', '{value}');
+			}
+		});
+		var TodoView = Backbone.View.extend({
+			el: function(h) {
+				return h('',
+							h('h3', 'TODO'),
+							h('ul#container'),
+							h('form', {onsubmit: 'handleSubmit'},
+								h('input#todo', {placeholder: 'Your next todo'}),
+								h('button', 'Add #:={_length} + 1=:')
+							)
+						);
+			},
+			itemView: TodoItemView,
+			handleSubmit: function(e) {
+				e.preventDefault();
+				this.collection.add({value: this.todo.value});
+				this.todo.value = '';
+			}
+		});
+		$(document.body).append((new TodoView({collection: new Backbone.Collection()})).el);
+	});
+	</script>
+</body>
+</html>

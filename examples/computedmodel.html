@@ -1,0 +1,24 @@
+<html>
+<body>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/underscore/master/underscore.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jquery/jquery/2.2.4/dist/jquery.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/backbone/master/backbone.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord/master/dist/backbone.cord.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var TestModel = Backbone.Model.extend({
+			computed: {
+				name: function(firstName, lastName) {
+					return firstName + ' ' + lastName;
+				}
+			}
+		});
+		window.model = new TestModel({firstName:'Carl', lastName:'John', nickname:'C.J.'});
+		var View = Backbone.View.extend({
+			el: function(h) { return h('p', 'My name is {name}.'); },
+		});
+		$(document.body).append((new View({model: window.model})).el);
+	});
+	</script>
+</body>
+</html>

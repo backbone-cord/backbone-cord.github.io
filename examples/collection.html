@@ -1,0 +1,84 @@
+<html>
+<head>
+	<style type="text/css">
+	div {
+		text-align: center;
+	}
+	table {
+		margin-left: auto;
+		margin-right: auto;
+	}
+	tbody tr, th {
+		cursor: pointer;
+	}
+	tr.is-selected {
+		background-color: orange;
+	}
+	</style>
+</head>
+<body>
+	<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="http://getskeleton.com/dist/css/normalize.css">
+	<link rel="stylesheet" href="http://getskeleton.com/dist/css/skeleton.css">
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/underscore/master/underscore.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jquery/jquery/2.2.4/dist/jquery.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/jashkenas/backbone/master/backbone.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/backbone-cord/backbone.cord/master/dist/backbone.cord.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var ItemView = Backbone.View.extend({
+			el: function(h) {
+				return h('tr.is-selected(_selected)', {onclick: 'onClick'},
+							h('td', '{firstName}'),
+							h('td', '{lastName}'),
+							h('td', '{version}')
+						);
+			},
+			onClick: function() { this.trigger('select', this.model); },
+			properties: {
+				'selected': false
+			}
+		});
+		var DetailsView = Backbone.View.extend({
+			el: function(h) {
+				return h('p', {hidden:'!firstName'}, 'The selected first name is: {firstName}. The selected last name is: {lastName}.');
+			}
+		});
+		var CollectionView = Backbone.View.extend({
+			el: function(h, v) {
+				return h('',
+							h('table',
+								h('thead',
+									h('tr',
+										h('th', {'data-sort': 'firstName', onclick: 'onSort'}, 'First Name'),
+										h('th', {'data-sort': 'lastName', onclick: 'onSort'}, 'Last Name'),
+										h('th', {'data-sort': 'version', onclick: 'onSort'}, 'Version')
+									)
+								),
+								h('tbody#container')
+							),
+							v(DetailsView),
+							h('', 'Viewing {_start} - {_end} out of {_length}.')
+						);
+			},
+			itemView: ItemView,
+			onSort: function(e) {
+				var comparator = e.currentTarget.getAttribute('data-sort');
+				this.collection.comparator = comparator;
+				this.collection.sort();
+			}
+		});
+		window.collection = new Backbone.Collection([
+			{firstName:'Marca', lastName:'Tofu', version: 3},
+			{firstName:'Macro', lastName:'Soft', version: 13},
+			{firstName:'Marcb', lastName:'The Great', version: 5},
+			{firstName:'Sesame1', lastName:'Tofu', version: 2},
+			{firstName:'Sesame2', lastName:'Soft', version: 0},
+			{firstName:'Sesame3', lastName:'The Great', version: 100}
+		]);
+		window.collectionView = new CollectionView({collection: window.collection});
+		$(document.body).append(collectionView.el);
+	});
+	</script>
+</body>
+</html>
