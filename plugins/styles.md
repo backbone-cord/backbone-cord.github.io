@@ -1,4 +1,5 @@
-#### styles
+styles
+-------------------------------
 
 The styles plugin can apply styling to a whole view (non-subview) DOM heirarchy in a View and it can also apply styling to a single element.
 

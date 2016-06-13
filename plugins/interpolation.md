@@ -8,5 +8,5 @@ The interpolation plugin simply adds another observer method to the view which c
 #### Example
 
 ```javascript
-view.observeFormat()
+view.observeFormat('Key 1 is equal to {key1} and key 2 is equal to {key2}', this.obsFunction)
 ```

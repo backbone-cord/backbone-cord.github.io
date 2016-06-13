@@ -42,6 +42,17 @@ Dependencies can be specified as the key `requirements`, an array of strings, in
 
 Plugins define a name, requirements, any number of callbacks, and then register themselves either by pushing or unshifting one plugin at a time to the plugins array.
 
+* `tag(context, tagName)` - (_el) process a tagName and optionally return an element overriding the default `createElement(tagName)`
+* `classes(context, classes)` - (_el and _subview) classes is an array of class names, altering classes or returning a different array will prevent default classes being applied
+* `attrs(context, attrs)` - (_el but conditionally invoked) attrs is a dictionary, altering attrs or returning a different dictionary will prevent default attrs being applied
+* `children(context, children)` - (_el conditionally invoked) children is an array of strings or dom elements
+* `bindings(context, bindings)` - (_subview) bindings that by default get converted to event listeners 
+* `complete(context)` - (_el and _subview) when creation and setup is complete, right before el and subview return, returning a different element can replace the el completely
+* `create(context)` - (new Cord.View()) called before properties are synthesized
+* `initialize(context)` - (new Cord.View()) called before observers are setup
+* `remove(context)` - called before a Cord.View is removed with `remove()`
+* `strings(context, strings)` - plugin callback to be used adhoc for processing strings from other plugins, where strings is a dictionary
+
 #### Scope Plugin Specification
 
 Plugins can also provide a variable binding scope for to allow access to other variables outside of the View's model. All that is needed is a `scope` object specified in the plugin with the following methods:
