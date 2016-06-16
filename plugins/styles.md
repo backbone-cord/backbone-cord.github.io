@@ -29,8 +29,8 @@ Backbone.View.extend({
 
 The following top-level dictionaries can be used to create media queries:
 
-* mobile
-* phablet
-* tablet
-* desktop
-* hd
+* mobile - Screens less than or equal to 320px wide
+* phablet - Screens less than or equal to 480px wide
+* tablet - Screens less than or equal to 768px wide
+* desktop - Screens less than or equal to 992px wide
+* hd - Screens less than or equal to 1200px wide
