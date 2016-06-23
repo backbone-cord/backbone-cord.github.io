@@ -35,6 +35,12 @@ The callback function must either do nothing or one of the following:
 * DO NOT replace any root elements in a view's el layout
 * If the element is the root element for a view and the documentfragment is returned, the remove function will not work properly because the view's el becomes an empty documentfragment
 
+#### Excluding Elements from Replacement
+
+Sometimes automatically replacing matched elements is not the desired behavior, for example when replacing one element with view containing the same element type, its `h()` function could invoke the replacement recursively.
+
+To exclude an element from replacement functions simple add the attribute `data-noreplace`.
+
 #### Examples
 
 The following shows replacing a psuedo tag with multiple elements.
