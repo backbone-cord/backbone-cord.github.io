@@ -25,7 +25,7 @@ The `setModel()` function will recursively call `setModel()` on all subviews if 
 
 * The subview is not a Backbone.Cord subview
 * The subview has a cascade function defined and when called with the new model explicity returns a value of false
-* The subview has an existing model that is NOT the same as the curent model on the parent. Meaning before `setModel()` is called the parent and subview need to have the exact same model
+* The subview has an existing model that is NOT the same as the current model on the parent. Meaning before `setModel()` is called the parent and subview need to have the exact same model
 * The subview is managing a collection
 
 The above conditions are checked in order, which means that the overriding `cascade()` function may be called even if the subview is managing a collection. This allows a model to cascade down into a subview, where the subview loads a related collection and the collection on the subview can change when the model on the parent changes, such as a collection of messages related to a mailbox model.
@@ -34,4 +34,4 @@ The above conditions are checked in order, which means that the overriding `casc
 
 The `cascade()` function can be defined on any view to intercept the new model and transform and subsume different data or use a submodel from the new model or set a related collection.
 
-The `cascade(newModel)` takes only a single argument of the newModel to be set a should return false when cascading was successful.
+The `cascade(newModel)` function takes only a single argument of the newModel to be set a should return false when cascading was successful.
