@@ -114,14 +114,14 @@ Methods
 
 **NOTE:** To insert text that doesn't process bindings and other special synax, simply directly create a text node with document.createTextNode()
 
-`_subview(instanceClass[, idClasses][, events])`
+`_subview(instanceClass[, idClasses][, bindings])` - where bindings is an object of events names mapping to a function or a string using the observer syntax below.  If an event is set to map to a property, the last argument of the event callback will be used as the value.
 
 Observing
 -------------------------------
 
 `observe(key, observer, immediate)` is added as method to Backbone.View, where a key and observer method can be given to register a callback for any changes. Typically this method is not called directly but indirectly through binding using the binding plugin.
 
-The following observing key syntax is supported:
+The following key syntax is supported:
 
 * !variable - wraps the callback in a function that will negate the value of variable into a boolean
 * %variable - indicates that an immediate callback will happen and observing won't take place - useful as an optimization for variables that won't change - not compatible with !
@@ -134,16 +134,19 @@ Builtin to the core is support for observing attributes on the View's model. The
 
 Using the key 'id' will result in using the model's idAttribute as a key instead.
 
-The following observer syntax is supported in addition to a function:
+The following observer syntax is supported in addition to a normal function:
 
-* key to a view function
-* key
-* subviewkey.property ..  - only supports subviews chains not nested models or objects
+* key for a view property that is a function which will be used as the observer callback
+* key for a view property
+* subviewkey.property - only supports subviews chains for deep nesting with the dot syntax nested not properties of properties. 
 
-Setting Values
+Getting/Setting Values
 -------------------------------
 
-`setValueForKey()`
+Also included is a standard way to set and get values from any scope associated with the view.
+
+`getValueForKey(key)` - key supports the same key syntax as above
+`setValueForKey(key, value)` - key supports the same observer syntax as above
 
 
 License
