@@ -65,6 +65,8 @@ var View = Backbone.View.extend({
 });
 ```
 
+The key/value pairs in the observers hash follow the same syntax described under Observing.
+
 #### filters
 
 Using the pipe character, reusable filters can be applied to values before they are passed to the end observer.
