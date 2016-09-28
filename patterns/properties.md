@@ -5,7 +5,8 @@ To tell a property to inherit from another global or other value until it has it
 ```
 Backbone.View.extend{
 	properties: {
-		tint: function($tint) { return this._tint || $tint; }
+		inherited: null,
+		inheritedLastName: function(_inherited, parentProp) { return _inherited || parentProp; }
 	}
 };
 ```
