@@ -41,6 +41,10 @@ Sometimes automatically replacing matched elements is not the desired behavior, 
 
 To exclude an element from replacement functions simple add the attribute `data-noreplace`.
 
+#### View Local Replacements
+
+Instead of registering a replacement function globally they can be provided within the scope of a view only. This is useful for building mixins or parent classes that need to control the building of a subclasses layout. To provide local replacement functions use the same syntax as global replacement functions but instead supply it on the view prototype level under the `replacements` property. The replacements must also be compiled using `Backbone.Cord.compileReplacements()`. See below for an example.
+
 #### Examples
 
 The following shows replacing a psuedo tag with multiple elements.
@@ -68,4 +72,18 @@ The following adds siblings to an element.
 Backbone.Cord.addReplacement('div.urgent', function(el, parent) {
 	parent.appendChild(this._el('div', 'Get this done now!'));
 });
+```
+
+The following creates local replacement functions.
+
+```javascript
+Backbone.Cord.mixins['example'] = {
+	replacements: Backbone.Cord.compileReplacements({
+		'logo': function(el, parent) {
+				return this._el('div',
+					this._el('h1', '{$brandName}'),
+					this._el('img',{src: ''{$brandLogoURL}''}));
+		}
+	})
+}
 ```
