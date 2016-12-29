@@ -25,7 +25,7 @@ Additions to Backbone
 
 #### el
 
-Implement el as a function and it will be passed and _el and _subview methods as arguments. Name these however you want. Below h and s are used as abbreviations of hyperscript and subview.
+Implement el as a function and it will be passed and createElement and createSubview methods as arguments. Name these however you want. Below h and s are used as abbreviations of hyperscript and subview.
 
 ```javascript
 var MyView = Backbone.View.extend({
@@ -98,7 +98,7 @@ Within Backbone's view constructor the following things happen in this order.
 1. The wrapped `_ensureElement()` is called where the following happens before `initialize()`
 2. If model or collection are specified on the prototype as a class, then they are replaced with an instance of the model or collection
 3. All properties are synthesized
-4. If el is a function it is bound and partially applied with _el and _subview arguments
+4. If el is a function it is bound and partially applied with createElement and createSubview arguments
 5. All observers are setup
 6. `initialize()` is called
 7. `render()` if needed is called outside by the parent view or whatever code created the view
@@ -112,11 +112,11 @@ Normally, in Backbone, either an element is provided as an existing element with
 Methods
 -------------------------------
 
-`_el(tagIdClasses[, attrs][, children])`
+`createElement(tagIdClasses[, attrs][, children])`
 
 **NOTE:** To insert text that doesn't process bindings and other special synax, simply directly create a text node with document.createTextNode()
 
-`_subview(instanceClass[, idClasses][, bindings])` - where bindings is an object of events names mapping to a function or a string using the observer syntax below.  If an event is set to map to a property, the last argument of the event callback will be used as the value.
+`createSubview(instanceClass[, idClasses][, bindings])` - where bindings is an object of events names mapping to a function or a string using the observer syntax below.  If an event is set to map to a property, the last argument of the event callback will be used as the value.
 
 Observing
 -------------------------------

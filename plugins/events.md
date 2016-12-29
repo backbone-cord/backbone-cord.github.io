@@ -1,13 +1,13 @@
 events
 -------------------------------
 
-The events plugin allows for easier mapping of all DOM events to a view function. The attributes simply need to be specified as `onx`, where is x is any event name that can be passed to `addEventListener()` and the value of `onx` is a function or a string indicating a function name on the view. Event listeners can also be added the same way to the root elements of subviews throught the `_subview(` function. Backbone's events hash may also be used not all event listeners need to be created this way.
+The events plugin allows for easier mapping of all DOM events to a view function. The attributes simply need to be specified as `onx`, where is x is any event name that can be passed to `addEventListener()` and the value of `onx` is a function or a string indicating a function name on the view. Event listeners can also be added the same way to the root elements of subviews throught the `createSubview(` function. Backbone's events hash may also be used not all event listeners need to be created this way.
 
 #### Example
 
 ```javascript
 h('button', {onclick: 'viewMethod'});
-_subview(Subview, {onclick: 'parentViewMethod'});
+createSubview(Subview, {onclick: 'parentViewMethod'});
 ```
 #### onkeyup and focus
 

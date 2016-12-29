@@ -1,7 +1,7 @@
 replacement
 -------------------------------
 
-The replacement plugin allows for matching against a single DOM node created by the _el hyperscript function and either replace it, augment it, or add siblings to it. 
+The replacement plugin allows for matching against a single DOM node created by the createElement hyperscript function and either replace it, augment it, or add siblings to it. 
 
 #### Registering Functions
 
@@ -51,9 +51,9 @@ The following shows replacing a psuedo tag with multiple elements.
 
 ```javascript
 Backbone.Cord.addReplacement('logo', function(el, parent) {
-	return this._el('div',
-		this._el('h1', '{$brandName}'),
-		this._el('img',{src: ''{$brandLogoURL}''}));
+	return this.createElement('div',
+		this.createElement('h1', '{$brandName}'),
+		this.createElement('img',{src: ''{$brandLogoURL}''}));
 });
 ```
 
@@ -70,7 +70,7 @@ The following adds siblings to an element.
 
 ```javascript
 Backbone.Cord.addReplacement('div.urgent', function(el, parent) {
-	parent.appendChild(this._el('div', 'Get this done now!'));
+	parent.appendChild(this.createElement('div', 'Get this done now!'));
 });
 ```
 
@@ -80,9 +80,9 @@ The following creates local replacement functions.
 Backbone.Cord.mixins['example'] = {
 	replacements: Backbone.Cord.compileReplacements({
 		'logo': function(el, parent) {
-				return this._el('div',
-					this._el('h1', '{$brandName}'),
-					this._el('img',{src: ''{$brandLogoURL}''}));
+				return this.createElement('div',
+					this.createElement('h1', '{$brandName}'),
+					this.createElement('img',{src: ''{$brandLogoURL}''}));
 		}
 	})
 }
