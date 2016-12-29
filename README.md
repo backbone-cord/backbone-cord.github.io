@@ -8,7 +8,7 @@ About
 #### Requirements
 
 * Backbone 1.1+, other versions and variants may also work but haven't been tested
-* Modern Browser, IE9+ - Array.indexOf, Object.getPrototypeOf, Object.defineProperty, Object.getOwnPropertyDescriptor, and Function.bind methods are used, possibly others that would need a polyfill on older browsers
+* Modern Browser, IE9+ - Array.indexOf, Array.isArray, Object.getPrototypeOf, Object.defineProperty, Object.getOwnPropertyDescriptor, and Function.bind methods are used, possibly others that would need a polyfill on older browsers
 
 *NOTE:* jQuery and Underscore.js are NOT required, though normally used with Backbone.
 
@@ -70,6 +70,14 @@ The key/value pairs in the observers hash follow the same syntax described under
 #### filters
 
 Using the pipe character, reusable filters can be applied to values before they are passed to the end observer.
+
+Built-in filters include
+
+* `lower` - Convert to a lowercase value
+* `upper` - Convert to a lowercase value
+* `title` - Convert to a titlecase value with each word capitalized
+
+All Math functions are also a default fallback when registered filter does not match, for example `floor` and `ceil` both are valid filters.
 
 #### subkeys
 
@@ -138,9 +146,9 @@ Using the key 'id' will result in using the model's idAttribute as a key instead
 
 The following observer syntax is supported in addition to a normal function:
 
-* key for a view property that is a function which will be used as the observer callback
-* key for a view property
-* subviewkey.property - only supports subviews chains for deep nesting with the dot syntax nested not properties of properties. 
+* key for a function on the view to use as a callback
+* key used to call setValueForKey()
+* _subviewkey.property - only supports subviews chains for deep nesting with the dot syntax nested not properties of properties. 
 
 Getting/Setting Values
 -------------------------------
@@ -150,6 +158,7 @@ Also included is a standard way to set and get values from any scope associated 
 `getValueForKey(key)` - key supports the same key syntax as above
 `setValueForKey(key, value)` - key supports the same observer syntax as above
 
+NOTE: If the key does not exist for a key it will simply return undefined.
 
 License
 -------------------------------
