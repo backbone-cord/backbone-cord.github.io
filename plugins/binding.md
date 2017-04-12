@@ -1,41 +1,56 @@
 binding
 -------------------------------
 
-Binds element attributes and text-based children to observable keys contained within `{observerableKey}` formatters.
+Binds element attributes and text nodes to observable keys contained within interpolated `[observerableKey]` keys.
+
+#### Example
+
+Example showing data-name attribute bound to `this.name` and input value bound to `this.age`.
 
 ```javascript
-h('div', {data-name: '{name}'}, 'Example with name bound here: {name}.');
+h('div', {data-name: '[name]'},
+	'Example with name bound here: [name].',
+	h('input', {'data-type': 'int' bind: 'age', placeholder: 'Enter your age'})
+);
+// or in JSX
+<div data-name="[name]">
+	Example with name bound here: [name].
+	<input data-type="int" bind="age" placeholder="Enter your age"></input>
+</div>;
 ```
 
 #### Special Binding Attributes
 
-The following are recognized as attributes but do not go through the `setAttribute()` function instead they are set directly on the element.
+The following are recognized as attributes but do not go through the `setAttribute()` function instead they are set directly on the element and the do NOT accept `[observerableKey]` syntax.
 
-* value - also invokes a change DOM event
-* checked - also invokes a change DOM event
-* innerHTML
+* `bind` - shortcut for setting both observe and change to the same key
+* `observe` - the value of this element encoded with the observable value when it changes
+* `change` - the value of this element is decoded to the key when the user changes it
+* `input` - the value of this element is decoded to the key when the user enters any input
+* `innerHTML` - the value of this element's innerHTML is set when the observable value changes
 
-#### Reverse Binding
+#### Value Encoding/Decoding
 
-Reverse binding can be done with special `input` or `change` attributes, each corresponding to those triggered DOM events. The value must be an observable key, where {} formatters aren't used
+Value encoding and decoding functions are specified in a single object under `Backbone.Cord.encoders` and `Backbone.Cord.decoders`. Both encoding and decoding functions are called based on the given `type` or `data-type` attribute of the element.
 
-```javascript
-h('input', {change:'key'});
-```
+The following decoders are built-in:
 
-#### Reverse Binding Mapping
+* `range`
+* `number`
+* `int`
+* `integer`
+* `float`
+* `decimal`
+* `date`
+* `datetime`
+* `bool`
+* `checkbox`
 
-When reverse binding changes for the following they are mapped using the corresponding code to types other than strings.
+The following encoders are built-in:
 
-* `range` - `parseInt(el.value)`
-* `number` - `Number(el.value)`
-* `integer` - `parseInt(el.value)`
-* `decimal` - `parseFloat(el.value)`
-* `date` - `new Date(el.value)`
-* `datetime` - `new Date(el.value)`
-* `checkbox` - `el.checked`
+* `date`
+* `datetime`
+* `bool`
+* `checkbox`
 
-#### Restrictions
-
-* Any DOM attribute can be bound to a variable or a formatted string, however it is recommended to NOT use the style attribute in this way (as a formatted string) because any styles applied with javascript, like with the hidden plugin will get lost when the style attribute is updated as a string on an observer callback.
-* Circular binding values is currently not supported, where the `value` is the attribute is set to the same key as `change` because when value changes this plugin will invoke a `change` event. Reverse binding on `input` is ok.
+**NOTE:** If a data-null attribute is found on the element than any empty value will be given as `null` instead of an empty string.

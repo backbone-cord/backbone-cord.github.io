@@ -1,46 +1,53 @@
 About
 -------------------------------
 
-**backbone.cord.js** enhances Backbone by enabling the easy creation of reactive connected views with two-way data binding and Jade-like declarative syntax.
-
-**backbone.cord.js** is a layout and data pipeline for Backbone that connects views with subviews and models. Observation and plugin system also enables many types of reactive interfaces.
+**backbone.cord.js** is a Backbone library for data binding and a JSX-compatible declarative layout pipeline.
 
 #### Requirements
 
 * Backbone 1.1+, other versions and variants may also work but haven't been tested
 * Modern Browser, IE9+ - Array.indexOf, Array.isArray, Object.getPrototypeOf, Object.defineProperty, Object.getOwnPropertyDescriptor, and Function.bind methods are used, possibly others that would need a polyfill on older browsers
-
-*NOTE:* jQuery and Underscore.js are NOT required, though normally used with Backbone.
+* jQuery and/or Underscore.js are NOT required, though normally used with Backbone.
 
 #### Compatibility Mode
 
-By default, Cord will globally modify the Backbone.View class. However, if `window.cordCompatibilityMode = true;` is set before Cord is loaded then Backbone.View will be extended as Backbone.Cord.View and all view modifications will happen on that class and Backbone.View will remain untouched. Backbone.View and Backbone.Cord.View are compatible with each other. There is no compatibility mode for Backbone.Model - any plugin changing Backbone.Model applies to all models.
+By default, Cord will globally modify the Backbone.View class. If `window.cordCompatibilityMode = true;` is set before Cord is loaded then Backbone.View will remain untouched and only Backbone.Cord.View will be upgraded.
 
-Additions to Backbone
+#### Documentation
+
+* [api](api) - internals of the library and how to create plugins
+* [mixins](mixins) - behavioral mixins for views
+* [patterns](patterns) - code and data structuring conventions
+* [plugins](plugins) - plugins that alter the pipeline of how elements are created
+* [scopes](scopes) - additional variable and model scopes for data binding
+
+Views
 -------------------------------
-
-* assumes that each view only has model or collection set, and if a view has collection, then el will reactively render more than one? this moves part of the parent responsibility to the child?
-* properties hash is added
-* observers hash is added
 
 #### el
 
-Implement el as a function and it will be passed and createElement and createSubview methods as arguments. Name these however you want. Below h and s are used as abbreviations of hyperscript and subview.
+In accordance with Backbone, the el function returns the view's layout. This can be specified with JSX or manually using the h function.
 
 ```javascript
-var MyView = Backbone.View.extend({
-	el: function(h, s) {
-		return h('', {},
-			'Text node child',
-			h('p', 'A paragraph child. I have {_x} pet {_animal}s.')
-		);
-	}
-	properties: {
-		animal: 'dog',
-		x: 2
+import {View} from "backbone";
+import {h} from "backbone.cord";
+
+export default View.extend({
+	el() {
+		return <p>Hello [model.firstName] [model.lastName].</p>;
 	}
 });
 ```
+
+#### model
+
+The model on the view can be set in a variety of different ways:
+
+* set automatically on view creation by setting the `model` class attribute to a model class
+* set by the `setModel()` method
+* cascaded by the parent's model automatically when adding as a subview
+* not set at all and default to an empty model that cannot be changed
+
 
 #### properties
 
@@ -51,16 +58,24 @@ The properties dictionary will synthesize property methods and set their value b
 * When definition is a function it implies `{get: definition, set: null}`
 * When either get or set is missing default accessors that read/write the backing _key are used
 
+#### observers
+
+#### styles
+
+The styles attribute is a nested object of CSS rules that follow direct parent child relationships. Each rule must be given as the Javascript camelCase version but browser prefixing is not required. Each value must be a string.
+
 Observers
 -------------------------------
 
 Similar to properties and events, the observers object describes observer methods to automatically observe various keys and take action when a value changes.
 
 ```javascript
-var View = Backbone.View.extend({
+var MyView = View.extend({
 	//....
 	observers: {
-		key: 'onKeyChangeViewMethod'
+		propName() {
+			console.log(`{this.propName} has changed!`);
+		}
 	}
 });
 ```
@@ -93,24 +108,9 @@ model and collection may be specified on the view's prototype as classes and a n
 
 The render method will typically go unused, but it could be used for rendering variant views or applying some global state change by rendering some supplied arguments or data.
 
-
 **NOTE:** Properties are set before the el method is called, so take caution when referencing dom elements from within the set methods.
 
 **NOTE:** Memory leaks can occur when removing elements that make use of binding. Unbinding happens when the containing View is removed. Subviews replaced with other subviews does proper cleanup.
-
-Order of Instantiating
--------------------------------
-
-Within Backbone's view constructor the following things happen in this order.
-
-1. The wrapped `_ensureElement()` is called where the following happens before `initialize()`
-2. If model or collection are specified on the prototype as a class, then they are replaced with an instance of the model or collection
-3. All properties are synthesized
-4. If el is a function it is bound and partially applied with createElement and createSubview arguments
-5. All observers are setup
-6. `initialize()` is called
-7. `render()` if needed is called outside by the parent view or whatever code created the view
-8. Value observers requiring initial values are called using a setTimeout
 
 Differences to Creating a View's Element with Backbone
 -------------------------------
@@ -125,6 +125,8 @@ Methods
 **NOTE:** To insert text that doesn't process bindings and other special synax, simply directly create a text node with document.createTextNode()
 
 `createSubview(instanceClass[, idClasses][, bindings])` - where bindings is an object of events names mapping to a function or a string using the observer syntax below.  If an event is set to map to a property, the last argument of the event callback will be used as the value.
+
+**NOTE:** To create a global alias to createElement such as window.createElement etc. be sure to bind it to the Cord object `window.createElement = Backbone.Cord.createElement.bind(Backbone.Cord);`
 
 Observing
 -------------------------------
