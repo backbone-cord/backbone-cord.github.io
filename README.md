@@ -125,6 +125,7 @@ var MyView = View.extend({
 		}
 	}
 });
+```
 
 #### styles
 
