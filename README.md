@@ -26,7 +26,7 @@ Views
 
 #### el
 
-In accordance with Backbone, the el function returns the view's layout. This can be specified with JSX or manually using the h function.
+In Backbone, normally the el function returns the view's root element but in Cord this is used to declare the entire layout including the root with bindings etc. This can be specified with JSX or manually using the h function.
 
 ```javascript
 import {View} from "backbone";
@@ -34,40 +34,87 @@ import {h} from "backbone.cord";
 
 export default View.extend({
 	el() {
-		return <p>Hello [model.firstName] [model.lastName].</p>;
+		return <p>Hello World. <b>This is the layout!</b></p>;
 	}
 });
 ```
 
 #### model
 
-The model on the view can be set in a variety of different ways:
+Each view always manages a single model. If not model is given a readonly empty model is used. The model can be set on a view in a variety of ways:
 
-* set automatically on view creation by setting the `model` class attribute to a model class
-* set by the `setModel()` method
-* cascaded by the parent's model automatically when adding as a subview
-* not set at all and default to an empty model that cannot be changed
+* on initialize by passing the `model` option
+* after initialization with the `setModel()` method - important to use the method because it invokes model observers
+* set automatically to the parent's model when adding as a subview
+* give a model class on the view's prototype and a new instance of that model will be created before initialization
+* implement a view method called `cascade(model)` which intercepts the automatic setting from the parent's model, call `setModel` with some related model instead and return `false`
 
+```javascript
+import {View} from "backbone";
+import {h} from "backbone.cord";
+import NameModel from "NameModel";
+
+export default View.extend({
+	model: NameModel,
+	el() {
+		return <p>Hello [model.firstName] [model.lastName]!</p>;
+	}
+});
+```
 
 #### properties
 
-The properties dictionary will synthesize property methods and set their value before el() is called and the layout created. By default properties are synthesized with get/set methods that simply set an internal variable that is the key name prefixed with an _. To override default methods or behavior provide a definition instead of a simple value adhering to the following rules. Each definition is an object made up of ONLY one or more of the keys get, set, and value.
+The properties dictionary will synthesize property methods and set their value before the layout is created. By default properties are synthesized with get/set methods that simply set an internal variable that is the key name prefixed with an _. To override default methods or behavior provide a definition instead of a simple value adhering to the following rules. Each definition is an object made up of ONLY one or more of the keys: `get`, `set`, and `value`.
 
-* When definition is just a simple value it implies `{value: definition}` - plain objects should be explicity set using a value key to avoid confusion with a definition
-* `set: null` creates a readonly property
-* When definition is a function it implies `{get: definition, set: null}`
+The following shortcuts are available:
+
+* When the definition is just a simple value it implies `{value: definition}` - plain objects should be explicity set using a value key to avoid confusion with a definition
+* Include `readonly: true` in the definition or `set: null` to create a readonly property where settings the value can only be done with a `new Backbone.Cord.ForceValue(value)`
+* When the definition is just a function it implies `{get: definition, set: null}`
 * When either get or set is missing default accessors that read/write the backing _key are used
+
+```javascript
+import {View} from "backbone";
+
+export default View.extend({
+	properties: {
+		a: {
+			set(value) {
+				this._a = value;
+				// ... use a for something 
+			}
+		}
+		x: () => 123,
+		y: 123,
+		z: {
+			value: 456,
+			readonly: true
+		}
+	}
+});
+```
+
+**id'ed** elements and subviews are automatically provided as view properties for easy access within the view.  For example:
+
+```javascript
+import {View} from "backbone";
+import {h} from "backbone.cord";
+import MySubview from "MySubview";
+
+export default View.extend({
+	el() {
+		return <p id="welcome">Welcome! <MySubview id="mysubview"></MySubview></p>;
+	},
+	//... this.welcome is set to the <p> DOM element and this.mysubview is set to the instance of MySubview
+	//... this.mysubview can be assigned a new subview and the DOM will be updated, however this.welcome cannot be reassigned
+});
+```
+
+For computed properties also see [computed properties](plugins/computed.md).
 
 #### observers
 
-#### styles
-
-The styles attribute is a nested object of CSS rules that follow direct parent child relationships. Each rule must be given as the Javascript camelCase version but browser prefixing is not required. Each value must be a string.
-
-Observers
--------------------------------
-
-Similar to properties and events, the observers object describes observer methods to automatically observe various keys and take action when a value changes.
+The observers dictionary is a shorthand to call the `observe(key, callback)` before the view is initialized.
 
 ```javascript
 var MyView = View.extend({
@@ -78,87 +125,81 @@ var MyView = View.extend({
 		}
 	}
 });
-```
 
-The key/value pairs in the observers hash follow the same syntax described under Observing.
+#### styles
 
-#### filters
-
-Using the pipe character, reusable filters can be applied to values before they are passed to the end observer.
-
-Built-in filters include
-
-* `lower` - Convert to a lowercase value
-* `upper` - Convert to a lowercase value
-* `title` - Convert to a titlecase value with each word capitalized
-
-All Math functions are also a default fallback when registered filter does not match, for example `floor` and `ceil` both are valid filters.
-
-#### subkeys
-
-Using dot notation, values can be narrowed down to any nested subkey before being passed to the end observer.
-
-#### model and collection
-
-These properties behave as normally, but to make changes to them use the supplied `setModel()` and `setCollection()` functions. 
-
-model and collection may be specified on the view's prototype as classes and a new instance of the model or collection will automatically be created when a new view is instantiated.
+The styles dictionary can be used to provide scoped styles just for the view. See [the styles plugin](plugins/styles.md) for more details.
 
 #### render
 
-The render method will typically go unused, but it could be used for rendering variant views or applying some global state change by rendering some supplied arguments or data.
+Optionally used to render content with more complicated logic through virtual-dom updates. See [the render plugin](plugins/render.md) for more details.
 
-**NOTE:** Properties are set before the el method is called, so take caution when referencing dom elements from within the set methods.
-
-**NOTE:** Memory leaks can occur when removing elements that make use of binding. Unbinding happens when the containing View is removed. Subviews replaced with other subviews does proper cleanup.
-
-Differences to Creating a View's Element with Backbone
+Data Binding
 -------------------------------
 
-Normally, in Backbone, either an element is provided as an existing element with the el attribute, or one is created with the given tagName, id, and className, or a function is used to generate the element.  Cord Views normally use the latter with presupplied arguments for creating hyperscript and subviews.  Also, when the el is function Cord will apply the className to the el which Backbone normally does not do.
+`observe(key, observer, immediate)` and `unobserve(key, observer)` are added as methods to the View class, where a key and observer method can be given to register/unregister a callback for any changes. Typically this method is not called directly but indirectly through binding using the binding plugin.
 
-Methods
--------------------------------
+### Scopes
 
-`createElement(tagIdClasses[, attrs][, children])`
+Every observable key must include a scope namespace, which is a `name.` prefix given before every key. The only exception is as a shortcut the view scope which references declared view properties can omit the scope namespace which is defined as `this.`.
 
-**NOTE:** To insert text that doesn't process bindings and other special synax, simply directly create a text node with document.createTextNode()
-
-`createSubview(instanceClass[, idClasses][, bindings])` - where bindings is an object of events names mapping to a function or a string using the observer syntax below.  If an event is set to map to a property, the last argument of the event callback will be used as the value.
-
-**NOTE:** To create a global alias to createElement such as window.createElement etc. be sure to bind it to the Cord object `window.createElement = Backbone.Cord.createElement.bind(Backbone.Cord);`
-
-Observing
--------------------------------
-
-`observe(key, observer, immediate)` is added as method to Backbone.View, where a key and observer method can be given to register a callback for any changes. Typically this method is not called directly but indirectly through binding using the binding plugin.
+## Key Syntax
 
 The following key syntax is supported:
 
-* !variable - wraps the callback in a function that will negate the value of variable into a boolean
-* %variable - indicates that an immediate callback will happen and observing won't take place - useful as an optimization for variables that won't change - not compatible with !
-* variable|filter - runs the variables
-* variable.subkey - observes only the first level key - doesnt' suport nested models
+* !key - wraps the callback in a function that will negate the value into a boolean
+* %key - indicates that only an immediate callback will happen and observing changes won't happen
+* key|filter - runs the value through one or more filters
+* key.subkey - subkeys can be used but only observes the first level key for changes not when the subkey changes
 
-**NOTE:** Using any of the above special syntax (not just a single key) will mean that unobserve() is not usable because the observer function is wrapped.
+**NOTE:** Using any of the above special syntax (not just a single key) will mean that unobserve() is not usable because the observer function becomes wrapped.
 
-Builtin to the core is support for observing attributes on the View's model. The keys are just given as keys accessible into the model.  Other scopes are supported through the plugin system.
+#### filters
 
-Using the key 'id' will result in using the model's idAttribute as a key instead.
+Using the pipe character, reusable filter functions can be applied to values before they are passed to the end observer. Custom filters can be added through `Backbone.Cord.filters`.
 
-The following observer syntax is supported in addition to a normal function:
+Built-in filters include:
 
-* key for a function on the view to use as a callback
-* key used to call setValueForKey()
-* _subviewkey.property - only supports subviews chains for deep nesting with the dot syntax nested not properties of properties. 
+* `lower` - Convert to a lowercase value
+* `upper` - Convert to a uppercase value
+* `title` - Convert to a titlecase value with each word capitalized
 
-Getting/Setting Values
--------------------------------
+**NOTE:** All Math functions are also a default fallback when registered filter does not match, for example `floor` and `ceil` both are valid filters.
+
+```javascript
+import {View} from "backbone";
+import {h, filters} from "backbone.cord";
+
+filters.len = (str) => str.length;
+export default View.extend({
+	el() {
+		return <p>Hello [model.name|upper], your name is [model.name|len] long!</p>;
+	}
+});
+```
+
+#### subkeys
+
+Using dot notation, values can be narrowed down to any level of nested subkey before being passed to the end observer. But as noted above only the top-level key is actually observed for changes. The following subkeys have special meaning:
+
+* `.id` is an alias to the model's idAttribute
+* `.value` can be used on an id'ed DOM element to get the decoded value from it
+
+## Observer Syntax
+
+The following observer syntax is supported in addition to providing a normal callback function:
+
+* key into the view that is set to a function to use as a callback
+* a key using the key syntax above which can then be used to call `setValueForKey()` with the observed value - used to proxy on value to another
+* subviewkey.property - for id'ed subviews deep nesting with the subkey dot syntax into the propery of a subview
+
+#### Getting/Setting Values with Key Syntax
 
 Also included is a standard way to set and get values from any scope associated with the view.
 
 `getValueForKey(key)` - key supports the same key syntax as above
 `setValueForKey(key, value)` - key supports the same observer syntax as above
+`setValuesForKeys(keyValues)` - provide a dictionary of values or arguments given as key1, value1, key2, value2, etc...
 
 NOTE: If the key does not exist for a key it will simply return undefined.
 
