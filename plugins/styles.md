@@ -1,6 +1,8 @@
 styles
 -------------------------------
 
+The styles attribute is a nested object of CSS rules that follow direct parent child relationships. Each rule must be given as the Javascript camelCase version but browser prefixing is not required. Each value must be a string.
+
 The styles plugin can apply styling to a whole view (non-subview) DOM heirarchy in a View and it can also apply styling to a single element.
 
 Single element styling is done using the special style attribute and is applied directly to the elements style javascript object. The example below creates a green button 100px wide. 

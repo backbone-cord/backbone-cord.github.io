@@ -121,7 +121,7 @@ var MyView = View.extend({
 	//....
 	observers: {
 		propName() {
-			console.log(`{this.propName} has changed!`);
+			console.log(`${this.propName} has changed!`);
 		}
 	}
 });
@@ -139,6 +139,8 @@ Data Binding
 -------------------------------
 
 `observe(key, observer, immediate)` and `unobserve(key, observer)` are added as methods to the View class, where a key and observer method can be given to register/unregister a callback for any changes. Typically this method is not called directly but indirectly through binding using the binding plugin.
+
+The default interpolation format is to place a key between two brackets, e.g. `[key]`, but these are configurable by setting `Backbone.Cord.regex.variable` for example, `regex.variable = {prefix: '[', suffix: ']'};`
 
 ### Scopes
 

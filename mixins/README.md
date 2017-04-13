@@ -1,7 +1,7 @@
 Applying Mixins
 -------------------------------
 
-Mixins automatically merge properties with one or more extendable objects.  Coinciding properties that are objects are deeply merged while functions will be chained together in-order.
+Mixins automatically merge properties with one or more extendable objects. Properties of the same name that are objects are deeply merged while functions will be chained together in-order.
 
 Built-In Mixins
 -------------------------------
