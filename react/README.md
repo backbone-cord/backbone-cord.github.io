@@ -25,7 +25,7 @@ The base Component is extended to include all `Backbone.Events` methods and `Cor
 * `setModel` 
 * `setCollection`
 
-The same observer syntax and key syntax are used as documented in the base [README](../).
+The same observer syntax and key syntax are used as documented in the base [README](../README.md).
 
 Binding Attributes
 -------------------------------
