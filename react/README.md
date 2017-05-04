@@ -10,7 +10,7 @@ The Cord object is the default export but as part of the process Cord will modif
 JSX Interpolation
 -------------------------------
 
-All text children in JSX are checked for binding interpolation.  Anything between `[key]` subscripts is interpolated as a call to bind(). To avoid having subscripts interpolated place a `raw` attribute on the element.
+All text children in JSX are checked for binding interpolation.  Anything between `[key]` subscripts is interpolated as a call to `bind(key)`. To avoid having subscripts interpolated place a `raw` attribute on the parent element.
 
 Component
 -------------------------------
@@ -25,7 +25,7 @@ The base Component is extended to include all `Backbone.Events` methods and `Cor
 * `setModel` 
 * `setCollection`
 
-The same observer syntax and key syntax are used as documented in the base [..](README).
+The same observer syntax and key syntax are used as documented in the base [README](..).
 
 Binding Attributes
 -------------------------------
@@ -71,5 +71,5 @@ Models and Router
 
 Also included with the module is Cord extensions to `Backbone.Model` and the `Backbone.Router`.
 
-* The extended Model adds support for [../plugins/computed.md](computed) attributes
+* The extended Model adds support for [computed](../plugins/computed.md) attributes
 * The Router subclass exposes components of the browser's URL route into a route scope
