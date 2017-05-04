@@ -1,7 +1,7 @@
 About
 -------------------------------
 
-**backbone.cord.js** is a Backbone library for data binding and a JSX-compatible declarative layout pipeline.
+**backbone.cord.js** is a React/Backbone library for data binding and a JSX-compatible declarative layout pipeline.
 
 #### Requirements
 
@@ -20,13 +20,14 @@ By default, Cord will globally modify the Backbone.View class. If `window.cordCo
 * [patterns](patterns) - code and data structuring conventions
 * [plugins](plugins) - plugins that alter the pipeline of how elements are created
 * [scopes](scopes) - additional variable and model scopes for data binding
+* [react](react) - Component-based integration with React/Preact
 
 Views
 -------------------------------
 
 #### el
 
-In Backbone, normally the el function returns the view's root element but in Cord this is used to declare the entire layout including the root with bindings etc. This can be specified with JSX or manually using the h function.
+In Backbone, normally the el function returns the view's root element but in Cord this is used to declare the entire layout including the root with bindings etc. This can be specified with JSX or manually using the `h` function.
 
 ```javascript
 import {View} from "backbone";
@@ -38,6 +39,8 @@ export default View.extend({
 	}
 });
 ```
+
+**Note:** If using the `h` function anywhere besides inside `el` or `render` in some other view function it needs to be called via `this.h` for plugins to work properly. If using JSX simply set a local `h` variable to be `let h = this.h.bind(this);` before.
 
 #### model
 
@@ -126,6 +129,10 @@ var MyView = View.extend({
 	}
 });
 ```
+
+#### subviews
+
+* Subviews do not support accepting children, only functional components do
 
 #### styles
 
